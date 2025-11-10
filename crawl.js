@@ -1,4 +1,3 @@
-const { link } = require("fs");
 const { JSDOM } = require("jsdom");
 
 function getURLsFromHTML(htmlBody, baseURL){
@@ -9,13 +8,24 @@ function getURLsFromHTML(htmlBody, baseURL){
     for (const linkElement of linkElements){
         if(linkElement.href.slice(0, 1) === "/"){
             // relative url
-            urls.push(`${baseURL}/`)
+            try{
+                const urlObject = new URL(`${baseURL}${linkElement.href}`)
+                urls.push(urlObject.href)
+            }
+            catch (err){
+                console.log(err.message)
+            }
         }
         else {
             // absolute url
-            urls.push(linkElement.href)
+            try{
+                const urlObject = new URL(linkElement.href)
+                urls.push(urlObject.href)
+            }
+            catch (err){
+                console.log(err.message)
+            }
         }
-        // urls.push(linkElement.href)
     }
 
     return urls
